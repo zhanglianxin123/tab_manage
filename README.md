@@ -1,4 +1,9 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+## This is a tag management extension
+1. You can manage the currently active tags
+two。 Group tags into collections
+3. Display commonly used labels in the form of cards
+4. The browser sidebar can manage the currently active tags
+
 
 ## Getting Started
 

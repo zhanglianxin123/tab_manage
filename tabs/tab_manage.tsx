@@ -14,6 +14,10 @@ import TabContent from './tab_content';
 import TabTags from './tab_tags';
 
 function DeltaFlyerPage() {
+  // 创建一个名为 parentState 的状态变量，并初始化为空对象
+  const [tags, setTags] = useState([]);
+
+
   const storage = new Storage({area: "local" })
   const { Header, Sider, Content } = Layout;
   const [collapsed, setCollapsed] = useState(true);
@@ -52,7 +56,7 @@ function DeltaFlyerPage() {
     <Layout style={{ minHeight: '100vh'}}>
       <Sider trigger={null} collapsible collapsed={collapsed} collapsedWidth={1} width={250}  style={{maxHeight:'calc(100vh)', overflowY: 'auto'}}>
       <div  style={{ display: collapsed? 'none':'block',}}>
-    {!collapsed && <TabManageQuery></TabManageQuery>}
+    {!collapsed && <TabManageQuery tags={tags} setTags={setTags}></TabManageQuery>}
   </div>
         
       </Sider>
@@ -94,8 +98,8 @@ function DeltaFlyerPage() {
             borderRadius: borderRadiusLG,
           }}
         >
-          <TabTags></TabTags>
-          <TabContent ></TabContent>
+          <TabTags tags={tags} setTags={setTags}></TabTags>
+          <TabContent></TabContent>
         </Content>
       </Layout>
     </Layout>

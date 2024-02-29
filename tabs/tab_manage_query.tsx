@@ -6,14 +6,15 @@ import { CloseOutlined } from '@ant-design/icons';
 import { Storage } from "@plasmohq/storage"
 
 
-function TabManageQuery() {
+function TabManageQuery(props) {
+  const { tags, setTags } = props;
   const storage = new Storage({area: "local" })
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [select, setSlect] = useState([])
-  const [clickTab, setclickTab] = useState({})
+  const [clickTab, setclickTab] = useState({title:'',url:'',favIconUrl: '',id: 11})
   var group_name='';
   const handleCancel = () => {
     console.log('Clicked cancel button');
@@ -28,6 +29,10 @@ function TabManageQuery() {
       try {
         const tabs = await chrome.tabs.query({});
         setData(tabs);
+        const t = await storage.get(tags);
+        if( t != undefined && Array.isArray(t)&&t.length>0) {
+          setTags(t)
+        }
         setIsLoading(false);
       } catch (error) {
         console.error('Error:', error);
@@ -39,6 +44,7 @@ function TabManageQuery() {
     return () => {
       window.removeEventListener('visibilitychange', handleVisibilityChange);
     };
+    
   }, []);
 
   async function handleVisibilityChange() {
@@ -74,14 +80,13 @@ function TabManageQuery() {
             <Tooltip placement="topRight" title={tab.title} color={'#108ee9'}>
             
             <Tag color="#108ee9" style={{width: "95%",textOverflow: 'ellipsis',overflow: 'hidden',}} >
-            <Button  type="primary"  shape="circle" icon={<CloseOutlined />} onClick={()=>{
+            <Button  type="primary" style={{ width: 18, height: 18,minWidth:18 ,padding: 0}}  shape="circle" icon={<CloseOutlined  />} onClick={()=>{
                 chrome.tabs.remove(tab.id)
                 setData(data.filter(item => item.id != tab.id))
-                console.log(tab)
               }}/>
         <span onClick={async () => {
               console.log(tab)
-              setclickTab({'title':tab.title,'url':tab.url,'favIconUrl': tab.favIconUrl,id: tab.id})
+              setclickTab({title:tab.title,url:tab.url,favIconUrl: tab.favIconUrl,id: tab.id})
               var group = await storage.get('group_name')
               if (group == undefined ){
                 
@@ -97,7 +102,7 @@ function TabManageQuery() {
               setOpen(true);
             }} style={{overflow: 'hidden',
             textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'}}> {tab.title}</span>
+            whiteSpace: 'nowrap', color: 'black',fontWeight: 'bold'}}> {tab.title}</span>
     </Tag>
     <Modal
         title="收藏"
@@ -131,13 +136,17 @@ function TabManageQuery() {
       options={select}
     />
     <Button style={{marginLeft:100}} type="primary"  onClick={async ()=>{
+      console.log("tab:"+clickTab)
+      console.log(clickTab)
       const tags = await storage.get('tags')
       if (tags != undefined && Array.isArray(tags)&& tags.length>0){
-        const new_tags = [...tags,{title: tab.title,url: tab.url,id:tab.id,favIconUrl:tab.favIconUrl}]
+        const new_tags = [...tags,{title: clickTab.title,url: clickTab.url,id:clickTab.id,favIconUrl:clickTab.favIconUrl}]
         await storage.set("tags",new_tags)
+        setTags(new_tags)
       }else{
-        const new_tags = [{title: tab.title,url: tab.url,id:tab.id,favIconUrl:tab.favIconUrl}]
+        const new_tags = [{title: clickTab.title,url: clickTab.url,id:clickTab.id,favIconUrl:clickTab.favIconUrl}]
         await storage.set("tags",new_tags)
+        setTags(new_tags)
       }
       setOpen(false);
       setConfirmLoading(false);

@@ -23,10 +23,8 @@ function TabContent() {
                 var fns = []
                 group.map(
                       async (group_name,index) =>{
-                        console.log("group_name:"+group_name)
                         var collections = await storage.get("tabs_"+group_name)
                         if (collections != undefined && Array.isArray(collections) && collections.length >0){
-                            console.log("collections:"+collections)
                             const child = <div key={index}>
                                 {collections.map((collection)=>{
                                     return <Tag closeIcon onClose={async()=>{
@@ -38,8 +36,6 @@ function TabContent() {
                                 })}
                             </div>
                             const item = {label: group_name,children:child,key:index}
-                            console.log("items2:"+items)
-                            console.log("item:"+group_name+item)
                             addItems(item)
                         }
                     }
@@ -54,7 +50,6 @@ function TabContent() {
         getData();
       }, []);
    
-        console.log("items"+items);
 
     return (
         <div key={'tab-content'} style={{paddingTop: 20}}>

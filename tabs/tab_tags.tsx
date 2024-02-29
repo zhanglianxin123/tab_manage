@@ -4,10 +4,11 @@ import Icon, { EditOutlined, EllipsisOutlined, SettingOutlined,PlusOutlined} fro
 import {  Avatar, Card,Flex,Modal,Input,Alert  } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { Storage } from "@plasmohq/storage"
-function TabTags() {
+function TabTags(props) {
+  // const { parentState, setParentState } = props;
     const storage = new Storage({area: "local" })
     const { Meta } = Card;
-    const [tags,setTags] = useState([])
+    const {tags,setTags} = props;
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -71,8 +72,12 @@ function TabTags() {
                 {
                     tags.map((tag)=>{
                         return (<Card
+                        onClick={()=>{
+                          window.open(tag.url)
+                        }}
                             extra={
-                                <CloseOutlined onClick={async()=>{
+                                <CloseOutlined onClick={async(event)=>{
+                                  event.stopPropagation();
                                     const new_tags = tags.filter(item=> item.id != tag.id)
                                     await storage.set('tags',new_tags)
                                     setTags(new_tags)
@@ -87,6 +92,7 @@ function TabTags() {
     }
                         >
                         <Meta
+                            
       title={tag.title}
     />
                         </Card>)
